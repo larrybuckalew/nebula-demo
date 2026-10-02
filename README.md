@@ -20,9 +20,21 @@ npm run typecheck  # tsc --noEmit
 
 Push to `main` and `.github/workflows/deploy.yml` handles the rest: type-check → build → publish `dist/` to Pages. Also runs on PRs so broken builds are caught early.
 
+**One-time setup** — Pages must be enabled on the repo and set to build with
+GitHub Actions, or the workflow fails at `configure-pages` with a 404 and the
+site never publishes:
+
+```bash
+gh api --method POST repos/larrybuckalew/nebula-demo/pages -f build_type=workflow
+```
+
+Verify with `gh api repos/larrybuckalew/nebula-demo/pages` — it should report
+`"build_type": "workflow"`. If a deploy fails after this, re-run it:
+`gh run rerun <run-id> --repo larrybuckalew/nebula-demo`.
+
 Key details:
 
-- **`base: "/nebula-demo/"`** in `vite.config.ts` — assets resolve under the repo sub-path on Pages (override by removing `base` for a custom domain at root).
+- **`base: "/nebula-demo/"`** in `vite.config.ts` — assets resolve under the repo sub-path on Pages (override by removing `base` for a custom domain at root). Every absolute URL in `index.html` (the favicon) must carry the same prefix.
 - **`dist/`** is the Pages artifact (Vite default). No SSR, no image optimizer — purely static.
 
 ## Where things live
@@ -45,7 +57,8 @@ src/
     Nav.tsx               # progress bar + dots
     Loader.tsx            # branded spinner
 public/
-  vite.svg                # favicon placeholder
+  favicon.svg              # app icon (linked from index.html)
+  icons.svg                # inline SVG sprite used by the overlay
 ```
 
 ## How the 3D works
@@ -79,8 +92,11 @@ Search `NEBULA` / `#3b82f6` / `#d4af37` / `#07070a` → replace brand, accent, a
 
 ## SEO
 
-Title/meta description in `index.html`; extend with `og:image` and JSON-LD as needed.
+Title, description, canonical and Open Graph/Twitter tags in `index.html`. The
+`og:image` points at the hub's project thumbnail — swap it for a dedicated
+1200x630 card if this gets shared standalone, and add JSON-LD (`WebApplication`
+or `SoftwareApplication`) if you want rich results.
 
 ## License
 
-MIT — see `LICENSE` if present in companion repos.
+MIT — see `LICENSE`.
