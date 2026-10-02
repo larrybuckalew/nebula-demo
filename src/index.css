@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --nebula-bg: #07070a;
+  --nebula-accent: #3b82f6;
+  --nebula-gold: #d4af37;
+}
+
+* { scrollbar-width: thin; scrollbar-color: #333 #07070a; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--nebula-bg);
+  color: #fafafa;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+.glass {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
